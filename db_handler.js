@@ -41,7 +41,7 @@ module.exports = {
       });
   },
   getAll: function (callback) {
-    this.getAllWhere('*', callback);
+    this.getAllWhere('', callback);
   },
   getAllWhere: function (condition, callback) {
     oracledb.getConnection(
@@ -51,16 +51,17 @@ module.exports = {
           callback(err);
           return;
         }
+        var sql = condition ? 'SELECT * FROM TODO '+condition : 'SELECT * FROM TODO';
         connection.execute(
-          'SELECT * FROM TODO WHERE :condition',
-          [condition],
+          sql,
           function (err, result) {
-            connection.release(function() {});
             if (err) {
               callback(err);
             } else {
+              console.log(result);
               callback(null, result);
             }
+            connection.release(function() {});
           }
         )
       }

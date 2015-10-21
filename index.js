@@ -13,11 +13,15 @@ server.get('/todo/all', function (req, res) {
         return;
       }
 
-      res.writeHead(200, {
-        'Content-Length': result.length,
-        'Content-Type': 'text/json'
-      });
-      res.write(result);
+      var rows = result.rows[0];
+      if (rows) {
+        var json = JSON.stringify(rows);
+        res.writeHead(200, {
+          'Content-Length': json.length,
+          'Content-Type': 'text/json'
+        });
+        res.write(json);
+      }
       res.end();
     });
 });
