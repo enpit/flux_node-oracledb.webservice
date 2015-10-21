@@ -1,11 +1,25 @@
 var restify = require('restify');
+var db = require('./db_handler.js');
 
 var server = restify.createServer();
 
 /* WEBSERVICE IMPLEMENTATION */
 server.get('/todo/all', function (req, res) {
-    console.log('got a request to get all todos');
-    // TODO implement getting all todos
+
+    db.getAll(function (err, result) {
+
+      if (err) {
+        console.log(err.message);
+        return;
+      }
+
+      res.writeHead(200, {
+        'Content-Length': result.length,
+        'Content-Type': 'text/json'
+      });
+      res.write(result);
+      res.end();
+    });
 });
 
 server.get('/todo/areAllComplete', function (req, res) {
@@ -21,6 +35,9 @@ server.post('/todo/:text', function (req, res) {
     	complete: false,
     	text: req.params.text
     };
+    db.addTodo(id, text, function (err) {
+      console.log(err.message);
+    });
 });
 
 server.put('/todo/:id/:updates', function (req, res) {
@@ -53,8 +70,13 @@ server.use(function (req, res, next) {
   next();
 });
 
-// TODO: Initialize Database
-
 server.listen(9999, function () {
     console.log('%s listening at port %s', server.name, server.url);
+});
+
+db.init(function (err) {
+  if (err) {
+    console.log('Database initialization failed. The webservice will now shut down.\nThis is the error message: ' + err);
+    server.close();
+  }
 });

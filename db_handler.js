@@ -7,7 +7,7 @@ var connection = {
   connectString: dbConfig.connectString
 };
 
-var defaultCallback = function (err, result) {
+var defaultCallback = function (err, result, callback) {
   if (err) {
     callback(err.message);
   } else {
