@@ -6,6 +6,7 @@ var connection = {
   password: dbConfig.password,
   connectString: dbConfig.connectString
 };
+oracledb.autoCommit = true;
 
 var defaultCallback = function (err, result, callback) {
   if (err) {
@@ -25,12 +26,14 @@ module.exports = {
           return;
         }
         connection.execute(
-          'INSERT INTO TODO VALUES (:id, :text, false)',
+          'INSERT INTO TODO VALUES (:id, :text, 0)',
           [id, text],
           function (err, result) {
+            connection.release(function() {});
             if (err) {
               callback(err);
             } else {
+              console.log("Rows inserted: " + result.rowsAffected);
               callback(null, result);
             }
           }
@@ -52,6 +55,7 @@ module.exports = {
           'SELECT * FROM TODO WHERE :condition',
           [condition],
           function (err, result) {
+            connection.release(function() {});
             if (err) {
               callback(err);
             } else {
@@ -77,6 +81,7 @@ module.exports = {
               connection.execute(
                 'CREATE TABLE TODO (id VARCHAR(36), text VARCHAR(36), complete NUMBER(1))',
                 function (err, result) {
+                  connection.release(function() {});
                   if (err) {
                     console.log(err);
                     callback(err);

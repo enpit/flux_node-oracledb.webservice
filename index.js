@@ -30,13 +30,10 @@ server.get('/todo/areAllComplete', function (req, res) {
 server.post('/todo/:text', function (req, res) {
     console.log('got a request to post a todo with text %s', req.params.text);
     var id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
-    var todo = {
-    	id: id,
-    	complete: false,
-    	text: req.params.text
-    };
-    db.addTodo(id, text, function (err) {
-      console.log(err.message);
+    db.addTodo(id, req.params.text, function (err) {
+      if (err) {
+        console.log(err);
+      }
     });
 });
 
