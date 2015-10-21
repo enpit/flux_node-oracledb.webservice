@@ -1,0 +1,11 @@
+{
+  "name": "enpit.sample.flux_node-oracledb.webservice",
+  "version": "0.1.0",
+  "description": "The database backend for our flux&node-oracledb demo. Uses restify for the webservice implementation and oracles node.js database driver.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Janis Krasemann (enpit consulting)",
+  "license": "ISC"
+}
