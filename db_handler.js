@@ -21,21 +21,53 @@ module.exports = {
       connection,
       function (err, connection) {
         if (err) {
-          callback(err.message);
+          callback(err);
           return;
         }
         connection.execute(
-          'INSERT INTO TODO VALUES (:id, :text, false)', [id, text],
-          defaultCallback
+          'INSERT INTO TODO VALUES (:id, :text, false)',
+          [id, text],
+          function (err, result) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(null, result);
+            }
+          }
         );
       });
+  },
+  getAll: function (callback) {
+    this.getAllWhere('*', callback);
+  },
+  getAllWhere: function (condition, callback) {
+    oracledb.getConnection(
+      connection,
+      function (err, connection) {
+        if (err) {
+          callback(err);
+          return;
+        }
+        connection.execute(
+          'SELECT * FROM TODO WHERE :condition',
+          [condition],
+          function (err, result) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(null, result);
+            }
+          }
+        )
+      }
+    )
   },
   init: function (callback) {
     oracledb.getConnection(
       connection,
       function (err, connection) {
         if (err) {
-          callback(err.message);
+          callback(err);
           return;
         }
         connection.execute(
@@ -43,8 +75,16 @@ module.exports = {
           function (err, result) {
             if (err) {
               connection.execute(
-                'CREATE TABLE TODO (id VARCHAR(20), text VARCHAR(30), complete NUMBER(1))',
-                defaultCallback);
+                'CREATE TABLE TODO (id VARCHAR(36), text VARCHAR(36), complete NUMBER(1))',
+                function (err, result) {
+                  if (err) {
+                    console.log(err);
+                    callback(err);
+                  } else {
+                    callback(null, result);
+                  }
+                }
+                );
             } else {
               // we're good
             }
