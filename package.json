@@ -6,7 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Janis Krasemann (enpit consulting)",
+  "author": {
+    "name": "Janis Krasemann",
+    "email": "janis.krasemann@enpit.de",
+    "url": "http://www.enpit.de"
+  },
   "license": "ISC",
   "dependencies": {
     "oracledb": "^1.3.0"
